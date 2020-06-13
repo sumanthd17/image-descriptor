@@ -12,6 +12,6 @@
 > PyTorch
 
 ## Team:
-> [Sumanth Doddapaneni](https://www.linkedin.com/in/sumanth-doddapaneni-25494b130/)
-> [BSNV Chaitanya](https://www.linkedin.com/in/basava-sai-naga-viswa-chaitanya-665083172/)
-> [Rusheel Gollakota](https://www.linkedin.com/in/rusheel-gollakota-028612145/) 
+- [Sumanth Doddapaneni](https://www.linkedin.com/in/sumanth-doddapaneni-25494b130/)
+- [BSNV Chaitanya](https://www.linkedin.com/in/basava-sai-naga-viswa-chaitanya-665083172/)
+- [Rusheel Gollakota](https://www.linkedin.com/in/rusheel-gollakota-028612145/) 
