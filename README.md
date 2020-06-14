@@ -17,7 +17,27 @@
 > PyTorch
 
 ## Install dependencies
-``` pip install -r requirements.txt ```
+``` pip install -r dev-requirements.txt ```
+
+## Contributing ##
+### Code Style ###
+
+Code is formatted using the [black](https://github.com/ambv/black) style. Merges to master are prevented if code does not conform.
+
+To apply black to your code, run black from the root Prefect directory:
+
+```
+black .
+```
+Formatting can be easy to forget when developing, so you may choose to install a pre-push hook for black, as follows:
+
+```
+pre-commit install --hook-type pre-push
+```
+
+Once installed, you won't be allowed to `git push` without passing black.
+
+In addition, a number of extensions are available for popular editors that will automatically apply black to your code.
 
 ## Team:
 - [Sumanth Doddapaneni](https://www.linkedin.com/in/sumanth-doddapaneni-25494b130/)
