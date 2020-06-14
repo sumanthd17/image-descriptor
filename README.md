@@ -8,8 +8,16 @@
 ## Dataset
 > MS COCO - Image Captioning Dataset
 
+## Task List
+ - [ ] Reproduce the results of [VirTex: Learning Visual Representations from Textual Annotations](https://arxiv.org/abs/2006.06666)
+ - [ ] Create Web App for Inference
+ - [ ] Improve Textual Head
+
 ## Technology Stack:
 > PyTorch
+
+## Install dependencies
+``` pip install -r requirements.txt ```
 
 ## Team:
 - [Sumanth Doddapaneni](https://www.linkedin.com/in/sumanth-doddapaneni-25494b130/)
