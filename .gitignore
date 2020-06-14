@@ -139,6 +139,7 @@ cython_debug/
 
 # extras
 .DS_Store
+.vscode
 
 # zip files
 *.zip
