@@ -24,13 +24,13 @@ data_loader = dataloader(
 )
 
 indices = data_loader.dataset.get_indices()
-print('{} sampled indices: {}'.format(len(indices), indices))
+print("{} sampled indices: {}".format(len(indices), indices))
 new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
 data_loader.batch_sampler.sampler = new_sampler
 
 for batch in data_loader:
-  images, captions = batch[0], batch[1]
-  break
+    images, captions = batch[0], batch[1]
+    break
 
-print('images.shape', images.shape)
-print('captions.shape', captions.shape)
+print("images.shape", images.shape)
+print("captions.shape", captions.shape)
