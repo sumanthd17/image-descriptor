@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from embedding import WordAndPositionalEmbedding
+from .embedding import WordAndPositionalEmbedding
 
 
 class TextualHead(nn.Module):
@@ -32,14 +32,16 @@ class TextualHead(nn.Module):
             padding_idx=padding_idx,
         )
 
-        transformer_decoder = nn.TransformerDecoderLayer(
+        LayerClass = nn.TransformerDecoderLayer
+        _layer = LayerClass(
             self.hidden_size,
             self.attention_heads,
             dim_feedforward=self.feedforward_size,
-            dropout=self.dropout,
+            dropout=dropout,
             activation="gelu",
         )
-        self.decoder = nn.TransformerDecoderLayer(transformer_decoder, self.num_layers)
+
+        self.decoder = nn.TransformerDecoder(_layer, self.num_layers)
         self.apply(self._init_weights)
 
         self.output = nn.Linear(self.hidden_size, self.vocab_size)
@@ -72,7 +74,7 @@ class TextualHead(nn.Module):
         output_logits = self.output(textual_features)
         return output_logits
 
-    def _init_weights(module):
+    def _init_weights(self, module):
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0, std=0.02)
         elif isinstance(module, nn.MultiheadAttention):
