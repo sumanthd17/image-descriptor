@@ -8,6 +8,8 @@ import os
 from .vocabulary import Vocabulary
 import torch.utils.data as data
 import torch
+import requests
+from io import BytesIO
 
 
 class COCODataset(Dataset):
@@ -21,11 +23,13 @@ class COCODataset(Dataset):
         vocab_file,
         from_vocab_file,
         threshold,
+        data_url,
     ):
         self.transform = transform
         self.mode = mode
         self.batch_size = batch_size
         self.root_dir = root_dir
+        self.data_url = data_url
         self.vocab = Vocabulary(threshold, vocab_file, from_vocab_file, annotation_file)
 
         if self.mode == "train" or self.mode == "val":
@@ -47,7 +51,12 @@ class COCODataset(Dataset):
             path = self.coco.loadImgs(image_id)[0]["file_name"]
 
             # convert image to tensor
-            image = Image.open(os.path.join(self.root_dir, path)).convert("RGB")
+            if self.data_url:
+                response = requests.get(self.data_url + path)
+                image = Image.open(BytesIO(response.content)).convert("RGB")
+            else:
+                image = Image.open(os.path.join(self.root_dir, path)).convert("RGB")
+
             image = self.transform(image)
 
             # convert caption to tensor
@@ -76,7 +85,14 @@ class COCODataset(Dataset):
 
 
 def dataloader(
-    mode, transform, batch_size, vocab_threshold, vocab_file, from_vocab_file, data_path
+    mode,
+    transform,
+    batch_size,
+    vocab_threshold,
+    vocab_file,
+    from_vocab_file,
+    data_path,
+    image_data_unavailable=True,
 ):
     if from_vocab_file:
         assert os.path.exists(
@@ -84,6 +100,11 @@ def dataloader(
         ), "Vocab file doesn't exist. Set from_vocab_file=false"
 
     img_dir = data_path + "/coco/images/{}2014".format(mode)
+    data_url = (
+        "http://images.cocodataset.org/{}2014/".format(mode)
+        if (image_data_unavailable)
+        else None
+    )
     captions = data_path + "/coco/annotations/captions_{}2014.json".format(mode)
 
     dataset = COCODataset(
@@ -95,6 +116,7 @@ def dataloader(
         vocab_file=vocab_file,
         from_vocab_file=from_vocab_file,
         threshold=vocab_threshold,
+        data_url=data_url,
     )
 
     if mode == "train":
