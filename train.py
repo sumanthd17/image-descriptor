@@ -42,4 +42,3 @@ for iteration in range(1):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
