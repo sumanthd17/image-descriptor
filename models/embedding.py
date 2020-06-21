@@ -17,7 +17,7 @@ class WordAndPositionalEmbedding(nn.Module):
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, tokens):
-        positional_indices = _create_positional_tokens(tokens)
+        positional_indices = self._create_positional_tokens(tokens)
         word_embeddings = self.words(tokens)
         positional_embeddings = self.positions(positional_indices)
 
@@ -26,7 +26,7 @@ class WordAndPositionalEmbedding(nn.Module):
 
         token_mask = (tokens != self.padding_idx).unsqueeze(-1)
 
-        embeddings = embeddings * token_mask.type(embeddings.type)
+        embeddings = embeddings * token_mask.type(embeddings.dtype)
         return embeddings
 
     def _create_positional_tokens(self, tokens):

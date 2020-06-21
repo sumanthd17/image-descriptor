@@ -85,8 +85,8 @@ def dataloader(
         # annotation_file = '../data/annotations/instances_train2014.json'
     elif mode == "val":
         assert os.path.exists(vocab_file), "Vocab file doesn't exist"
-        img_dir = "../data/val2014"
-        captions = "../data/annotations/captions_val2014.json"
+        img_dir = "./data/val2014"
+        captions = "./data/annotations/captions_val2014.json"
         # annotation_file = '../data/annotations/instances_val2014.json'
 
     dataset = COCODataset(
