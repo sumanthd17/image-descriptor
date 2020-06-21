@@ -3,9 +3,9 @@ import torch.nn as nn
 import torchvision.models as models
 
 
-class ResNet50(nn.Module):
+class VisualBackbone(nn.Module):
     def __init__(self, embed_size):
-        super(ResNet50, self).__init__()
+        super(VisualBackbone, self).__init__()
         resnet = models.resnet50(pretrained=True)
         modules = list(resnet.children())[:-1]
         self.resent = nn.Sequential(*modules)

@@ -76,18 +76,15 @@ class COCODataset(Dataset):
 
 
 def dataloader(
-    mode, transform, batch_size, vocab_threshold, vocab_file, from_vocab_file
+    mode, transform, batch_size, vocab_threshold, vocab_file, from_vocab_file, data_path
 ):
-    if mode == "train":
-        assert os.path.exists(vocab_file), "Vocab file doesn't exist"
-        img_dir = "../data/train2014"
-        captions = "../data/annotations/captions_train2014.json"
-        # annotation_file = '../data/annotations/instances_train2014.json'
-    elif mode == "val":
-        assert os.path.exists(vocab_file), "Vocab file doesn't exist"
-        img_dir = "../data/val2014"
-        captions = "../data/annotations/captions_val2014.json"
-        # annotation_file = '../data/annotations/instances_val2014.json'
+    if from_vocab_file:
+        assert os.path.exists(
+            vocab_file
+        ), "Vocab file doesn't exist. Set from_vocab_file=false"
+
+    img_dir = data_path + "/coco/images/{}2014".format(mode)
+    captions = data_path + "/coco/annotations/captions_{}2014.json".format(mode)
 
     dataset = COCODataset(
         transform=transform,
