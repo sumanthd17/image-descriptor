@@ -93,19 +93,21 @@ def train(
     return total_loss / total_step
 
 
-visual = ResNet50(1024)
-textual = TextualHead(10000, 1024, 1, 16, 4096, 0.1, 30, 0)
-
 dl = dataloader("val", transform_val, 32, 5, "./pickle/vocab.pkl", True)
 indices = dl.dataset.get_indices()
 new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
 dl.batch_sampler.sampler = new_sampler
 total_val_step = math.ceil(len(dl.dataset.caption_lengths) / dl.batch_size)
 
+visual = ResNet50(1024)
+textual = TextualHead(len(dl.dataset.vocab), 1024, 1, 16, 4096, 0.1, 30, 0)
 
 criterion = nn.CrossEntropyLoss()
 
 params = list(visual.parameters()) + list(textual.parameters())
 optimizer = torch.optim.Adam(params=params, lr=0.01)
 
-train(dl, visual, textual, criterion, optimizer, 10000, 1, total_val_step)
+print(len(dl.dataset.vocab))
+train(
+    dl, visual, textual, criterion, optimizer, len(dl.dataset.vocab), 1, total_val_step
+)
