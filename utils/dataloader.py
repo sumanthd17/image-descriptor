@@ -97,7 +97,7 @@ def dataloader(
     if from_vocab_file:
         assert os.path.exists(
             vocab_file
-        ), "Vocab file doesn't exist. Set from_vocab_file=false"
+        ), "Vocab file doesn't exist. Set from_vocab_file=False"
 
     img_dir = data_path + "/coco/images/{}2014".format(mode)
     data_url = (

@@ -23,6 +23,7 @@ class Vocabulary:
 
     def get_vocab(self):
         if os.path.exists(self.vocab_file) and self.from_vocab_file:
+            print("--- LOADED VOCAB ---")
             with open(self.vocab_file, "rb") as f:
                 vocab = pickle.load(f)
                 self.word2idx = vocab.word2idx

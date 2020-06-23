@@ -147,3 +147,7 @@ cython_debug/
 # data
 data
 pickle
+*.pkl
+
+# model training checkpoints
+save_model
