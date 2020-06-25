@@ -53,6 +53,8 @@ class TextualHead(nn.Module):
         ones = torch.ones_like(caption_tokens)
         caption_mask = caption_lengths.unsqueeze(1) < ones.cumsum(dim=1)
 
+        # caption_mask = caption_mask.transpose(0, 1)
+
         caption_embeddings = self.embedding(caption_tokens)
 
         unidirectional_mask = self._generate_future_mask(
@@ -60,7 +62,12 @@ class TextualHead(nn.Module):
         )
 
         caption_embeddings = caption_embeddings.transpose(0, 1)
-        visual_features = visual_features.transpose(0, 1)
+        # visual_features = visual_features.transpose(0, 1)
+
+        # print(f"vision features: {visual_features.shape}")
+        # print(f"caption embed: {caption_embeddings.shape}")
+        # print(f"unidirectional mask: {unidirectional_mask.shape}")
+        # print(f"key padding mask: {caption_mask.shape}")
 
         textual_features = self.decoder(
             caption_embeddings,
