@@ -117,6 +117,12 @@ params = list(visual.parameters()) + list(textual.parameters())
 optimizer = torch.optim.Adam(params=params, lr=0.01)
 
 print(len(dl.dataset.vocab))
+
+if torch.cuda.is_available():
+    visual.cuda()
+    textual.cuda()
+    criterion.cuda()
+
 train(
     dl, visual, textual, criterion, optimizer, len(dl.dataset.vocab), 1, total_val_step
 )
