@@ -26,7 +26,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
         len(data_loader.dataset.caption_lengths) / data_loader.batch_sampler.batch_size
     )
 
-    print("----- TRAINING STARTED -----")
+    print("----- TRAINING STARTED: {} -----".format(args.model))
     for epoch in range(1, args.epochs + 1):
         for step in range(1, total_step + 1):
             indices = data_loader.dataset.get_indices()

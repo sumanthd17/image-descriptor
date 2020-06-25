@@ -5,7 +5,7 @@ import sys
 from utils.dataloader import dataloader
 from utils.transforms import transform_train, transform_val
 
-from train.LSTM import trainLSTM
+from training.LSTM import trainLSTM
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument(

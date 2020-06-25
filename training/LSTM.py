@@ -1,12 +1,12 @@
 import numpy as np
 import sys
 
+from .training import train
+
 sys.path.append("../")
 
 from models.encoders import VisualBackbone
 from models.decoders import TextualHeadLSTM
-
-from .train import train
 
 
 def trainLSTM(data_loader, args):
