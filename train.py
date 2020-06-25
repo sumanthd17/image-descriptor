@@ -93,7 +93,16 @@ def train(
     return total_loss / total_step
 
 
-dl = dataloader("val", transform_val, 32, 5, "./pickle/vocab.pkl", True)
+dl = dataloader(
+    mode="val",
+    transform=transform_val,
+    batch_size=32,
+    vocab_threshold=5,
+    vocab_file="./pickle/vocab.pkl",
+    from_vocab_file=True,
+    img_dir_path="./data/val2014",
+    captions_path="./data/annotations/captions_val2014.json",
+)
 indices = dl.dataset.get_indices()
 new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
 dl.batch_sampler.sampler = new_sampler
