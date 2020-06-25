@@ -12,7 +12,7 @@ import numpy as np
 from utils.transforms import transform_train, transform_val
 from utils.dataloader import dataloader
 
-from models.encoders import ResNet50
+from models.encoders import VisualBackbone
 from models.decoders import TextualHead
 
 PRINT_EVERY = 100
@@ -99,7 +99,7 @@ new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
 dl.batch_sampler.sampler = new_sampler
 total_val_step = math.ceil(len(dl.dataset.caption_lengths) / dl.batch_size)
 
-visual = ResNet50(1024)
+visual = VisualBackbone(1024)
 textual = TextualHead(len(dl.dataset.vocab), 1024, 1, 16, 4096, 0.1, 30, 0)
 
 criterion = nn.CrossEntropyLoss()
