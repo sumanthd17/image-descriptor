@@ -10,6 +10,9 @@ def train(encoder, decoder, data_loader, vocab_size, args):
     encoder.to(device)
     decoder.to(device)
 
+    encoder.train()
+    decoder.train()
+
     params = list(decoder.parameters()) + list(encoder.embed.parameters())
 
     criterion = (

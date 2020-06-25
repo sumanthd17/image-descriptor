@@ -2,6 +2,9 @@ import argparse
 import os
 import sys
 
+from utils.dataloader import dataloader
+from utils.transforms import transform_train, transform_val
+
 from train.LSTM import trainLSTM
 
 parser = argparse.ArgumentParser(description="")
@@ -63,6 +66,19 @@ args = parser.parse_args()
 if not os.path.exists(args.model_dir):
     os.makedirs(args.model_dir)
 
+transformer = transform_train if (args.mode == "train") else transform_val
+
+data_loader = dataloader(
+    transform=transformer,
+    mode=args.mode,
+    batch_size=args.batch_size,
+    vocab_threshold=args.vocab_threshold,
+    from_vocab_file=args.from_vocab_file,
+    vocab_file="./vocab.pkl",
+    data_path=args.data_dir,
+    image_data_unavailable=args.data_unavailable,
+)
+
 if args.model == "lstm":
     if args.mode == "train":
-        trainLSTM(args)
+        trainLSTM(data_loader, args)
