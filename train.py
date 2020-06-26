@@ -45,13 +45,14 @@ def train(
         for batch in train_loader:
             images, captions = batch[0], batch[1]
             break
-
+        mask = captions.shape[1] * torch.ones(32)
         if torch.cuda.is_available():
             images = images.cuda()
             captions = captions.cuda()
+            mask = mask.cuda()
 
         features = encoder(images)
-        outputs = decoder(features, captions, captions.shape[1] * torch.ones(32))
+        outputs = decoder(features, captions, mask)
 
         loss = criterion(outputs.view(-1, vocab_size), captions.view(-1))
 
