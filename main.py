@@ -4,8 +4,10 @@ import sys
 
 from utils.dataloader import dataloader
 from utils.transforms import transform_train, transform_val
+from utils.argparsers import str2bool
 
 from training.LSTM import trainLSTM
+
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument(
@@ -21,6 +23,7 @@ parser.add_argument(
     "--data_unavailable",
     dest="data_unavailable",
     default=True,
+    type=str2bool,
     help="set to True if Image data not available locally. \
         If set to True then internet connection is a much for \
         getting image data from 'http://images.cocodataset.org/'",
@@ -54,6 +57,7 @@ parser.add_argument(
     "--from_vocab_file",
     dest="from_vocab_file",
     default=True,
+    type=str2bool,
     help="set to False if vocabulary has to created i.e., vocab.pkl isn't available",
 )
 parser.add_argument(
