@@ -4,6 +4,10 @@ import torch
 import torch.nn as nn
 import torch.utils.data as data
 
+sys.path.append("../")
+
+from utils.load_checkpoint import load_checkpoint
+
 
 def train(encoder, decoder, data_loader, vocab_size, args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,11 +26,19 @@ def train(encoder, decoder, data_loader, vocab_size, args):
     )
     optimizer = torch.optim.Adam(params=params, lr=0.001)
 
+    encoder, decoder, optimizer, start_epoch = load_checkpoint(
+        encoder, decoder, optimizer, device, args
+    )
+
     total_step = math.ceil(
         len(data_loader.dataset.caption_lengths) / data_loader.batch_sampler.batch_size
     )
 
-    print("----- TRAINING STARTED: {} -----".format(args.model))
+    print(
+        "----- TRAINING STARTED of {} from epoch # {} -----".format(
+            args.model, start_epoch
+        )
+    )
     for epoch in range(1, args.epochs + 1):
         for step in range(1, total_step + 1):
             indices = data_loader.dataset.get_indices()
@@ -67,10 +79,12 @@ def train(encoder, decoder, data_loader, vocab_size, args):
                     "encoder": encoder.state_dict(),
                     "decoder": decoder.state_dict(),
                     "optimizer": optimizer.state_dict(),
-                    "epoch": epoch,
+                    "epoch": start_epoch + epoch,
                     "train_step": step,
                 },
                 os.path.join(
-                    args.model_dir, "model-{}-{}.pkl".format(args.model, epoch)
+                    args.model_dir,
+                    args.model,
+                    "model-{}-{}.pkl".format(args.model, start_epoch + epoch),
                 ),
             )

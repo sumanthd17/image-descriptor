@@ -64,11 +64,18 @@ parser.add_argument(
     "--vocab_threshold", dest="vocab_threshold", default=5, type=int, help="",
 )
 parser.add_argument("--model", dest="model", help="decoder model to be used")
+parser.add_argument(
+    "--cont_train",
+    dest="cont_train",
+    type=str2bool,
+    default=False,
+    help="choose where to train from starting or continue from latest checkpoint available.",
+)
 
 args = parser.parse_args()
 
-if not os.path.exists(args.model_dir):
-    os.makedirs(args.model_dir)
+if not os.path.exists(os.path.join(args.model_dir, args.model)):
+    os.makedirs(os.path.join(args.model_dir, args.model))
 
 transformer = transform_train if (args.mode == "train") else transform_val
 
