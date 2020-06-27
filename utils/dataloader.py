@@ -99,13 +99,13 @@ def dataloader(
             vocab_file
         ), "Vocab file doesn't exist. Set from_vocab_file=False"
 
-    img_dir = data_path + "/coco/images/{}2014".format(mode)
+    img_dir = data_path + "/images/{}2014".format(mode)
     data_url = (
         "http://images.cocodataset.org/{}2014/".format(mode)
         if (image_data_unavailable)
         else None
     )
-    captions = data_path + "/coco/annotations/captions_{}2014.json".format(mode)
+    captions = data_path + "/annotations/captions_{}2014.json".format(mode)
 
     dataset = COCODataset(
         transform=transform,
