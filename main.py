@@ -6,7 +6,8 @@ from utils.dataloader import dataloader
 from utils.transforms import transform_train, transform_val
 from utils.argparsers import str2bool
 
-from training.LSTM import trainLSTM
+from image_descriptors.LSTM import LSTM
+from training import train
 
 
 parser = argparse.ArgumentParser(description="")
@@ -61,6 +62,12 @@ parser.add_argument(
     help="set to False if vocabulary has to created i.e., vocab.pkl isn't available",
 )
 parser.add_argument(
+    "--vocab_file",
+    dest="vocab_file",
+    default="./vocab.pkl",
+    help="path to vocab file. Will be considered only if from_vocab_file is True",
+)
+parser.add_argument(
     "--vocab_threshold", dest="vocab_threshold", default=5, type=int, help="",
 )
 parser.add_argument("--model", dest="model", help="decoder model to be used")
@@ -85,11 +92,16 @@ data_loader = dataloader(
     batch_size=args.batch_size,
     vocab_threshold=args.vocab_threshold,
     from_vocab_file=args.from_vocab_file,
-    vocab_file="./vocab.pkl",
+    vocab_file=args.vocab_file,
     data_path=args.data_dir,
     image_data_unavailable=args.data_unavailable,
 )
 
+vocab_size = len(data_loader.dataset.vocab)
+print("vocabulary size: {}".format(vocab_size))
+
 if args.model == "lstm":
-    if args.mode == "train":
-        trainLSTM(data_loader, args)
+    encoder, decoder = LSTM(vocab_size, args)
+
+if args.mode == "train":
+    train(encoder, decoder, data_loader, vocab_size, args)
