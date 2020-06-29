@@ -70,7 +70,9 @@ parser.add_argument(
 parser.add_argument(
     "--vocab_threshold", dest="vocab_threshold", default=5, type=int, help="",
 )
-parser.add_argument("--model", dest="model", help="decoder model to be used")
+parser.add_argument(
+    "--model", dest="model", default="lstm", help="decoder model to be used"
+)
 parser.add_argument(
     "--cont_train",
     dest="cont_train",
@@ -101,7 +103,7 @@ vocab_size = len(data_loader.dataset.vocab)
 print("vocabulary size: {}".format(vocab_size))
 
 if args.model == "lstm":
-    encoder, decoder = LSTM(vocab_size, args)
+    encoder, decoder = LSTM(vocab_size)
 
 if args.mode == "train":
     train(encoder, decoder, data_loader, vocab_size, args)

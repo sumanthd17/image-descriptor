@@ -4,10 +4,10 @@ import sys
 sys.path.append("../")
 
 from models.encoders import VisualBackbone
-from models.decoders import TextualHeadLSTM
+from models.decoders.LSTM import TextualHeadLSTM
 
 
-def LSTM(vocab_size, args):
+def LSTM(vocab_size):
 
     encoder = VisualBackbone(300)
     decoder = TextualHeadLSTM(300, 512, vocab_size, num_layers=1)
