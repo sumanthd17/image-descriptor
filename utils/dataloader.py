@@ -24,12 +24,16 @@ class COCODataset(Dataset):
         from_vocab_file,
         threshold,
         data_url,
+        model="attention",
+        max_cap_len=100,
     ):
         self.transform = transform
         self.mode = mode
         self.batch_size = batch_size
         self.root_dir = root_dir
         self.data_url = data_url
+        self.model = model
+        self.max_cap_len = max_cap_len
         self.vocab = Vocabulary(threshold, vocab_file, from_vocab_file, annotation_file)
 
         if self.mode == "train" or self.mode == "val":
@@ -65,9 +69,15 @@ class COCODataset(Dataset):
             caption.append(self.vocab(self.vocab.start_word))
             caption.extend([self.vocab(token) for token in tokens])
             caption.append(self.vocab(self.vocab.end_word))
+            if self.model == "attention":
+                caption.extend(
+                    [self.vocab(self.vocab.pad_word)] * (self.max_cap_len - len(tokens))
+                )
+
+            caplen = torch.Tensor([len(tokens) + 2]).long()
             caption = torch.Tensor(caption).long()
 
-            return image, caption
+            return image, caption, caplen
 
     def __len__(self):
         if self.mode == "train" or self.mode == "val":
@@ -93,6 +103,7 @@ def dataloader(
     from_vocab_file,
     data_path,
     image_data_unavailable=True,
+    model="attention",
 ):
     if from_vocab_file:
         assert os.path.exists(
@@ -117,6 +128,7 @@ def dataloader(
         from_vocab_file=from_vocab_file,
         threshold=vocab_threshold,
         data_url=data_url,
+        model=model,
     )
 
     if mode == "train":

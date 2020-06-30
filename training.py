@@ -44,7 +44,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
             new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
             data_loader.batch_sampler.sampler = new_sampler
 
-            images, captions = next(iter(data_loader))
+            images, captions, caplens = next(iter(data_loader))
             images = images.to(device)
             captions = captions.to(device)
 

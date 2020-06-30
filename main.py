@@ -97,6 +97,7 @@ data_loader = dataloader(
     vocab_file=args.vocab_file,
     data_path=args.data_dir,
     image_data_unavailable=args.data_unavailable,
+    model=args.model,
 )
 
 vocab_size = len(data_loader.dataset.vocab)

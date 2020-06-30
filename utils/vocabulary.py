@@ -14,6 +14,7 @@ class Vocabulary:
         self.start_word = "<start>"
         self.end_word = "<end>"
         self.unk_word = "<unk>"
+        self.pad_word = "<pad>"
         self.threshold = threshold
         self.vocab_file = vocab_file
         self.from_vocab_file = from_vocab_file
@@ -38,6 +39,7 @@ class Vocabulary:
         self.add_word(self.start_word)
         self.add_word(self.end_word)
         self.add_word(self.unk_word)
+        self.add_word(self.pad_word)
         self.add_captions()
 
     def init_vocab(self):

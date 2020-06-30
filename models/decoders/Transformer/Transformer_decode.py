@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import sys
 
-from embedding import WordAndPositionalEmbedding
+from Word_positional_embedding import WordAndPositionalEmbedding
 
 
 class TextualHead(nn.Module):
