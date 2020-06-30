@@ -21,7 +21,7 @@ class AttentionDecoder(nn.Module):
         self.encoder_dim = encoder_dim
         self.attention_dim = attention_dim
         self.embed_dim = embed_dim
-        self.decoder_dim = decoder_dim
+        self.decoder_dim = decoder_dim  # this is "hidden_size" arg in LSTMCell
         self.vocab_size = vocab_size
         self.device = device
         self.dropout = dropout

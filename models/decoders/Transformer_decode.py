@@ -2,7 +2,9 @@ import torch
 import torch.nn as nn
 import sys
 
-from Word_positional_embedding import WordAndPositionalEmbedding
+sys.path.append("../")
+
+from embeddings.Word_positional_embedding import WordAndPositionalEmbedding
 
 
 class TextualHead(nn.Module):

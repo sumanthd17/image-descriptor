@@ -24,8 +24,8 @@ class COCODataset(Dataset):
         from_vocab_file,
         threshold,
         data_url,
+        max_cap_len,
         model="attention",
-        max_cap_len=100,
     ):
         self.transform = transform
         self.mode = mode
@@ -104,6 +104,7 @@ def dataloader(
     data_path,
     image_data_unavailable=True,
     model="attention",
+    max_cap_len=30,
 ):
     if from_vocab_file:
         assert os.path.exists(
@@ -128,6 +129,7 @@ def dataloader(
         from_vocab_file=from_vocab_file,
         threshold=vocab_threshold,
         data_url=data_url,
+        max_cap_len=max_cap_len,
         model=model,
     )
 

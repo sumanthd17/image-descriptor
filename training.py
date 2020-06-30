@@ -24,6 +24,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
     )
     optimizer = torch.optim.Adam(params=params, lr=0.001)
 
+    start_epoch = 0
     if args.cont_train:
         encoder, decoder, optimizer, start_epoch = load_checkpoint(
             encoder, decoder, optimizer, device, args
