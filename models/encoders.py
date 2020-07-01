@@ -30,9 +30,7 @@ class EncoderAttention(nn.Module):
         resnet = models.resnet50(pretrained=True)
         modules = list(resnet.children())[:-2]
         self.resnet = nn.Sequential(*modules)
-        self.adaptive_pool = nn.AdaptiveAvgPool2d(
-            (encoded_image_size, encoded_image_size)
-        )
+        self.embed = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
 
     def forward(self, images):
 
@@ -41,7 +39,7 @@ class EncoderAttention(nn.Module):
             out = self.resnet(images)
 
         # (batch_size, 2048, encoded_image_size, encoded_image_size)
-        out = self.adaptive_pool(out)
+        out = self.embed(out)
 
         # (batch_size, encoded_image_size, encoded_image_size, 2048)
         out = out.permute(0, 2, 3, 1)

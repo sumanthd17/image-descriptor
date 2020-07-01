@@ -6,7 +6,8 @@ from utils.dataloader import dataloader
 from utils.transforms import transform_train, transform_val
 from utils.argparsers import str2bool
 
-from image_descriptors.LSTM import LSTM
+from image_descriptors.LSTM import lstm
+from image_descriptors.attentionLSTM import attention_lstm
 from training import train
 
 
@@ -104,7 +105,9 @@ vocab_size = len(data_loader.dataset.vocab)
 print("vocabulary size: {}".format(vocab_size))
 
 if args.model == "lstm":
-    encoder, decoder = LSTM(vocab_size)
+    encoder, decoder = lstm(vocab_size)
+elif args.model == "attention":
+    encoder, decoder = attention_lstm(vocab_size)
 
 if args.mode == "train":
     train(encoder, decoder, data_loader, vocab_size, args)

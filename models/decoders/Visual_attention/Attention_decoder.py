@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from Attention import Attention
+from .Attention import Attention
 
 
 class AttentionDecoder(nn.Module):

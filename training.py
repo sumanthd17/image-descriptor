@@ -3,6 +3,7 @@ import math, os, sys
 import torch
 import torch.nn as nn
 import torch.utils.data as data
+from torch.nn.utils.rnn import pack_padded_sequence
 
 from utils.load_checkpoint import load_checkpoint
 
@@ -48,11 +49,28 @@ def train(encoder, decoder, data_loader, vocab_size, args):
             images, captions, caplens = next(iter(data_loader))
             images = images.to(device)
             captions = captions.to(device)
+            caplens = caplens.to(device)
 
             features = encoder(images)
-            outputs = decoder(features, captions)
 
-            loss = criterion(outputs.view(-1, vocab_size), captions.view(-1))
+            if args.model == "lstm":
+                scores = decoder(features, captions)
+                loss = criterion(scores.view(-1, vocab_size), captions.view(-1))
+            elif args.model == "attention":
+                scores, caps_sorted, decode_lengths, alphas, _ = decoder(
+                    features, captions, caplens
+                )
+                targets = caps_sorted[:, 1:]
+
+                scores = pack_padded_sequence(
+                    scores, decode_lengths, batch_first=True
+                ).data
+                targets = pack_padded_sequence(
+                    targets, decode_lengths, batch_first=True
+                ).data
+
+                loss = criterion(scores, targets)
+                loss += 1.0 * ((1.0 - alphas.sum(dim=1)) ** 2).mean()
 
             optimizer.zero_grad()
             loss.backward()
