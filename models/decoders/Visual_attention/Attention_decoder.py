@@ -3,6 +3,8 @@ from torch import nn
 
 from .Attention import Attention
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class AttentionDecoder(nn.Module):
     def __init__(
@@ -74,8 +76,8 @@ class AttentionDecoder(nn.Module):
         decode_lengths = (caption_lengths - 1).tolist()
         max_decode_lengths = max(decode_lengths)
 
-        predictions = torch.zeros(batch_size, max_decode_lengths, vocab_size)
-        alphas = torch.zeros(batch_size, max_decode_lengths, num_pixels)
+        predictions = torch.zeros(batch_size, max_decode_lengths, vocab_size).to(device)
+        alphas = torch.zeros(batch_size, max_decode_lengths, num_pixels).to(device)
 
         for t in range(max_decode_lengths):
             batch_size_t = sum([l > t for l in decode_lengths])

@@ -18,11 +18,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
 
     params = list(decoder.parameters()) + list(encoder.embed.parameters())
 
-    criterion = (
-        nn.CrossEntropyLoss().cuda()
-        if torch.cuda.is_available()
-        else nn.CrossEntropyLoss()
-    )
+    criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.Adam(params=params, lr=0.001)
 
     start_epoch = 0
@@ -69,7 +65,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
                     targets, decode_lengths, batch_first=True
                 ).data
 
-                loss = criterion(scores, targets.to(device))
+                loss = criterion(scores, targets)
                 loss += 1.0 * ((1.0 - alphas.sum(dim=1)) ** 2).mean()
 
             optimizer.zero_grad()
