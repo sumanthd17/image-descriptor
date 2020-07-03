@@ -46,42 +46,51 @@ class COCODataset(Dataset):
             self.caption_lengths = [len(token) for token in all_tokens]
 
     def __getitem__(self, index):
-        # check mode
-        if self.mode == "train" or self.mode == "val":
-            # get the corresponding image, captions
-            ann_id = self.ids[index]
-            caption = self.coco.anns[ann_id]["caption"]
-            image_id = self.coco.anns[ann_id]["image_id"]
-            path = self.coco.loadImgs(image_id)[0]["file_name"]
+        # get the corresponding image, captions
+        ann_id = self.ids[index]
+        caption = self.coco.anns[ann_id]["caption"]
+        image_id = self.coco.anns[ann_id]["image_id"]
+        path = self.coco.loadImgs(image_id)[0]["file_name"]
 
-            # convert image to tensor
-            if self.data_url:
-                response = requests.get(self.data_url + path)
-                image = Image.open(BytesIO(response.content)).convert("RGB")
-            else:
-                image = Image.open(os.path.join(self.root_dir, path)).convert("RGB")
+        # convert image to tensor
+        if self.data_url:
+            response = requests.get(self.data_url + path)
+            image = Image.open(BytesIO(response.content)).convert("RGB")
+        else:
+            image = Image.open(os.path.join(self.root_dir, path)).convert("RGB")
 
-            image = self.transform(image)
+        image = self.transform(image)
 
-            # convert caption to tensor
-            tokens = word_tokenize(str(caption).lower())
-            caption = []
-            caption.append(self.vocab(self.vocab.start_word))
-            caption.extend([self.vocab(token) for token in tokens])
-            caption.append(self.vocab(self.vocab.end_word))
-            if self.model == "attention":
-                caption.extend(
-                    [self.vocab(self.vocab.pad_word)] * (self.max_cap_len - len(tokens))
-                )
+        caption, caplen = self.encode_captions(caption)
 
-            caplen = torch.Tensor([len(tokens) + 2]).long()
-            caption = torch.Tensor(caption).long()
+        caplen = torch.Tensor([caplen]).long()
+        caption = torch.Tensor(caption).long()
 
-            return image, caption, caplen
+        all_captions = []
+        if self.mode == "val":
+            # all caption ids corresponding to the image
+            all_captions = self.coco.getAnnIds(imgIds=[image_id])
+            all_captions = [self.coco.anns[i]["caption"] for i in all_captions]
+            all_captions = [self.encode_captions(i, True)[0] for i in all_captions]
+            all_captions = np.array(all_captions)
+
+        return image, caption, caplen, all_captions
 
     def __len__(self):
         if self.mode == "train" or self.mode == "val":
             return len(self.ids)
+
+    def encode_captions(self, caption, flag=False):
+        tokens = word_tokenize(str(caption).lower())
+        caption = []
+        caption.append(self.vocab(self.vocab.start_word))
+        caption.extend([self.vocab(token) for token in tokens])
+        caption.append(self.vocab(self.vocab.end_word))
+        if flag or self.model == "attention":
+            caption.extend(
+                [self.vocab(self.vocab.pad_word)] * (self.max_cap_len - len(tokens))
+            )
+        return caption, len(tokens) + 2
 
     def get_indices(self):
         length = np.random.choice(self.caption_lengths)

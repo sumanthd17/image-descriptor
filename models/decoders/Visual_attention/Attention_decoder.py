@@ -72,16 +72,16 @@ class AttentionDecoder(nn.Module):
         # Initialize LSTM state -- out dims : (batch_size, decoder_dim)
         h, c = self.init_hidden_state(encoder_out)
 
+        # excluding <end> position
         decode_lengths = (caption_lengths - 1).tolist()
+        max_decode_lengths = max(decode_lengths)
 
-        predictions = torch.zeros(batch_size, max(decode_lengths), vocab_size).to(
+        predictions = torch.zeros(batch_size, max_decode_lengths, vocab_size).to(
             self.device
         )
-        alphas = torch.zeros(batch_size, max(decode_lengths), num_pixels).to(
-            self.device
-        )
+        alphas = torch.zeros(batch_size, max_decode_lengths, num_pixels).to(self.device)
 
-        for t in range(max(decode_lengths)):
+        for t in range(max_decode_lengths):
             batch_size_t = sum([l > t for l in decode_lengths])
             attention_weighted_encoding, alpha = self.attention(
                 encoder_out[:batch_size_t], h[:batch_size_t]

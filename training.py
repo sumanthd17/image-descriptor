@@ -46,7 +46,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
             new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
             data_loader.batch_sampler.sampler = new_sampler
 
-            images, captions, caplens = next(iter(data_loader))
+            images, captions, caplens, _ = next(iter(data_loader))
             images = images.to(device)
             captions = captions.to(device)
             caplens = caplens.to(device)
@@ -60,7 +60,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
                 scores, caps_sorted, decode_lengths, alphas, _ = decoder(
                     features, captions, caplens
                 )
-                targets = caps_sorted[:, 1:]
+                targets = caps_sorted[:, 1:]  # removing <start>
 
                 scores = pack_padded_sequence(
                     scores, decode_lengths, batch_first=True

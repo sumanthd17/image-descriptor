@@ -9,7 +9,7 @@ from utils.argparsers import str2bool
 from image_descriptors.LSTM import lstm
 from image_descriptors.attentionLSTM import attention_lstm
 from training import train
-
+from validation import validation
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument(
@@ -111,3 +111,5 @@ elif args.model == "attention":
 
 if args.mode == "train":
     train(encoder, decoder, data_loader, vocab_size, args)
+elif args.mode == "val":
+    validation(encoder, decoder, data_loader, vocab_size, args)
