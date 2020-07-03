@@ -69,7 +69,7 @@ def train(encoder, decoder, data_loader, vocab_size, args):
                     targets, decode_lengths, batch_first=True
                 ).data
 
-                loss = criterion(scores, targets)
+                loss = criterion(scores, targets.to(device))
                 loss += 1.0 * ((1.0 - alphas.sum(dim=1)) ** 2).mean()
 
             optimizer.zero_grad()
