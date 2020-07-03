@@ -10,12 +10,6 @@ from models.decoders.Visual_attention.Attention_decoder import AttentionDecoder
 def attention_lstm(vocab_size):
 
     encoder = EncoderAttention()
-    decoder = AttentionDecoder(
-        512,
-        512,
-        512,
-        vocab_size,
-        torch.device("cuda" if torch.cuda.is_available() else "cpu"),
-    )
+    decoder = AttentionDecoder(512, 512, 512, vocab_size,)
 
     return encoder, decoder

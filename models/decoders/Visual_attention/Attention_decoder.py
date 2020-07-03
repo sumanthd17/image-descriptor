@@ -11,7 +11,6 @@ class AttentionDecoder(nn.Module):
         embed_dim,
         decoder_dim,
         vocab_size,
-        device,
         encoder_dim=2048,
         dropout=0.5,
     ):
@@ -23,7 +22,6 @@ class AttentionDecoder(nn.Module):
         self.embed_dim = embed_dim
         self.decoder_dim = decoder_dim  # this is "hidden_size" arg in LSTMCell
         self.vocab_size = vocab_size
-        self.device = device
         self.dropout = dropout
 
         self.attention = Attention(encoder_dim, decoder_dim, attention_dim)
@@ -76,10 +74,8 @@ class AttentionDecoder(nn.Module):
         decode_lengths = (caption_lengths - 1).tolist()
         max_decode_lengths = max(decode_lengths)
 
-        predictions = torch.zeros(batch_size, max_decode_lengths, vocab_size).to(
-            self.device
-        )
-        alphas = torch.zeros(batch_size, max_decode_lengths, num_pixels).to(self.device)
+        predictions = torch.zeros(batch_size, max_decode_lengths, vocab_size)
+        alphas = torch.zeros(batch_size, max_decode_lengths, num_pixels)
 
         for t in range(max_decode_lengths):
             batch_size_t = sum([l > t for l in decode_lengths])
