@@ -6,11 +6,15 @@ import PIL
 import torch
 from torch.autograd import Variable
 
-from image_descriptors.LSTM import LSTM
 from utils.clean_sentence import clean_sentence
 from utils.load_checkpoint import load_checkpoint
 from utils.transforms import transform_val
 
+from image_descriptors.LSTM import lstm
+from image_descriptors.attentionLSTM import attention_lstm
+
+from inference.LSTM_decoder import beam_search_lstm, greedy_search_lstm
+from inference.Attention_decoder import beam_search_attention
 
 parser = argparse.ArgumentParser(description="")
 parser.add_argument(
@@ -45,7 +49,9 @@ with open(args.vocab_file, "rb") as f:
 device = torch.device("cpu")
 
 if args.model == "lstm":
-    encoder, decoder = LSTM(len(vocab))
+    encoder, decoder = lstm(len(vocab))
+elif args.model == "attention":
+    encoder, decoder = attention_lstm(len(vocab))
 
 encoder, decoder, _, _ = load_checkpoint(encoder, decoder, None, device, args, False)
 encoder.eval()
@@ -57,6 +63,12 @@ img = img.unsqueeze_(0)
 img = Variable(img)
 
 visual_features = encoder(img)
-output_sentence = decoder.sample(visual_features)
 
-print(clean_sentence(output_sentence, vocab))
+if args.model == "lstm":
+    # output_sentences = greedy_search_lstm(visual_features, decoder)
+    output_sentences = beam_search_lstm(visual_features, decoder, vocab, device)
+elif args.model == "attention":
+    output_sentences, alphas = beam_search_attention(visual_features, decoder, vocab, device)
+
+for l in output_sentences:
+    print(clean_sentence(l, vocab))

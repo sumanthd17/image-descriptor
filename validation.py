@@ -113,4 +113,4 @@ def validation(encoder, decoder, val_loader, vocab_size, args):
             assert len(references) == len(hypotheses)
 
     bleu4 = corpus_bleu(references, hypotheses)
-    print("BLEU-4 - {}".format(bleu4))
+    print("\n\nBLEU-4 - {}".format(bleu4))

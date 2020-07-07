@@ -27,16 +27,3 @@ class TextualHeadLSTM(nn.Module):
         out = self.linear(lstm_outputs)
 
         return out
-
-    # Greedy method
-    def sample(self, inputs, states=None, max_len=20):
-        output_ids = []
-        for _ in range(max_len):
-            inputs = inputs.unsqueeze(1)
-            hidden, states = self.lstm(inputs, states)
-            outputs = self.linear(hidden.squeeze(1))
-            prediction = outputs.argmax(1)
-            output_ids.append(prediction.item())
-            inputs = self.embedding_layer(prediction)
-
-        return output_ids

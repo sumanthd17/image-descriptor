@@ -113,7 +113,7 @@ def dataloader(
     data_path,
     image_data_unavailable=True,
     model="attention",
-    max_cap_len=30,
+    max_cap_len=100,
 ):
     if from_vocab_file:
         assert os.path.exists(
