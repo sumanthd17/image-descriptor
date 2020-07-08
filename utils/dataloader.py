@@ -72,7 +72,7 @@ class COCODataset(Dataset):
             all_captions = self.coco.getAnnIds(imgIds=[image_id])
             all_captions = [self.coco.anns[i]["caption"] for i in all_captions]
             all_captions = [self.encode_captions(i, True)[0] for i in all_captions]
-            all_captions = np.array(all_captions)
+            all_captions = np.array(all_captions[:5])
 
         return image, caption, caplen, all_captions
 
