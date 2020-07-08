@@ -15,8 +15,6 @@ from utils.dataloader import dataloader
 from models.encoders import ResNet50
 from models.decoders import TextualHead
 
-PRINT_EVERY = 100
-
 
 def train(
     train_loader,
@@ -27,9 +25,11 @@ def train(
     vocab_size,
     epoch,
     total_step,
+    batch_size,
     start_step=1,
     start_loss=0.0,
 ):
+    PRINT_EVERY = 1000
     encoder.train()
     decoder.train()
 
@@ -45,14 +45,15 @@ def train(
         for batch in train_loader:
             images, captions = batch[0], batch[1]
             break
-        mask = captions.shape[1] * torch.ones(32)
+
+        caption_lengths = captions.shape[1] * torch.ones(batch_size)
         if torch.cuda.is_available():
             images = images.cuda()
             captions = captions.cuda()
-            mask = mask.cuda()
+            caption_lengths = caption_lengths.cuda()
 
         features = encoder(images)
-        outputs = decoder(features, captions, mask)
+        outputs = decoder(features, captions, caption_lengths)
 
         loss = criterion(outputs.view(-1, vocab_size), captions.view(-1))
 
@@ -94,36 +95,14 @@ def train(
     return total_loss / total_step
 
 
-dl = dataloader(
-    mode="val",
-    transform=transform_val,
-    batch_size=32,
-    vocab_threshold=5,
-    vocab_file="./pickle/vocab.pkl",
-    from_vocab_file=True,
-    img_dir_path="./data/val2014",
-    captions_path="./data/annotations/captions_val2014.json",
-)
-indices = dl.dataset.get_indices()
-new_sampler = data.sampler.SubsetRandomSampler(indices=indices)
-dl.batch_sampler.sampler = new_sampler
-total_val_step = math.ceil(len(dl.dataset.caption_lengths) / dl.batch_size)
-
-visual = ResNet50(1024)
-textual = TextualHead(len(dl.dataset.vocab), 1024, 1, 16, 4096, 0.1, 30, 0)
-
-criterion = nn.CrossEntropyLoss()
-
-params = list(visual.parameters()) + list(textual.parameters())
-optimizer = torch.optim.Adam(params=params, lr=0.01)
-
-print(len(dl.dataset.vocab))
-
-if torch.cuda.is_available():
-    visual.cuda()
-    textual.cuda()
-    criterion.cuda()
-
-train(
-    dl, visual, textual, criterion, optimizer, len(dl.dataset.vocab), 1, total_val_step
-)
+# train(
+#     dl,
+#     visual,
+#     textual,
+#     criterion,
+#     optimizer,
+#     len(dl.dataset.vocab),
+#     1,
+#     total_val_step,
+#     BATCH_SIZE,
+# )
