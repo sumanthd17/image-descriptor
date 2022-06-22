@@ -6,7 +6,7 @@ joblib==0.15.1
 kiwisolver==1.2.0
 matplotlib==3.2.1
 nltk==3.5
-numpy==1.18.5
+numpy==1.22.0
 olefile==0.46
 Pillow==7.1.2
 pycocotools==2.0.0
